@@ -13,8 +13,29 @@ class StaticCircle extends StatefulWidget {
   State<StaticCircle> createState() => _StaticCircleState();
 }
 
-class _StaticCircleState extends State<StaticCircle> {
+class _StaticCircleState extends State<StaticCircle>
+    with SingleTickerProviderStateMixin {
   OverlayEntry? _overlayEntry;
+
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _animation = Tween<double>(begin: 0.0, end: 1).animate(_controller);
+    _controller.animateTo(1);
+    super.initState();
+  }
+
+  void animate() {
+    _controller.reset();
+    _controller.animateTo(1);
+  }
 
   OverlayEntry _createOverlayEntry(BuildContext context) {
     RenderBox renderBox = context.findRenderObject() as RenderBox;
@@ -53,6 +74,8 @@ class _StaticCircleState extends State<StaticCircle> {
                             ExpenseCubit.instance
                                 .changeSummaryDuration(Summary.year);
                         }
+                        animate();
+
                         _removeOverlay();
                       },
                       child: ListTile(
@@ -71,7 +94,7 @@ class _StaticCircleState extends State<StaticCircle> {
     );
   }
 
-  void _showOverlay(BuildContext context) {
+  void _showDurationForSummary(BuildContext context) {
     _overlayEntry = _createOverlayEntry(context);
     Overlay.of(context).insert(_overlayEntry!);
   }
@@ -134,76 +157,90 @@ class _StaticCircleState extends State<StaticCircle> {
         return SizedBox(
           width: 50.w,
           height: 50.w,
-          child: Stack(
-            children: [
-              SizedBox(
-                width: 50.w,
-                height: 50.w,
-              ),
-              //generating all the category with its color and volume.
-              ...List.generate(
-                state.summary.length,
-                (index) {
-                  return AnimatedRotation(
-                    //turn to where the last element is ended. and start from there.
-                    turns: index == 0
-                        ? 0
-                        : state.summary
-                                .sublist(0, index)
-                                .map((e) => e.percentage)
-                                .reduce((value, element) => value + element) /
-                            100,
-                    duration: const Duration(
-                      microseconds: 500,
-                    ),
-                    child: SizedBox(
+          child: AnimatedBuilder(
+              animation: _animation,
+              builder: (context, widget) {
+                return Stack(
+                  children: [
+                    SizedBox(
                       width: 50.w,
                       height: 50.w,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 30,
-                        color: state.summary.elementAt(index).category.color,
-                        //spended by the category
-                        value: state.summary.elementAt(index).percentage / 100,
+                    ),
+                    //generating all the category with its color and volume.
+                    ...List.generate(
+                      state.summary.length,
+                      (index) {
+                        return AnimatedRotation(
+                          //turn to where the last element is ended. and start from there.
+
+                          turns: (index == 0
+                                  ? 0
+                                  : state.summary
+                                          .sublist(0, index)
+                                          .map((e) => e.percentage)
+                                          .reduce((value, element) =>
+                                              value + element) /
+                                      100) *
+                              //animating by appying muliplication for the value 0 to 1.
+                              _animation.value,
+                          duration: const Duration(
+                            microseconds: 500,
+                          ),
+                          child: SizedBox(
+                            width: 50.w,
+                            height: 50.w,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 30,
+                              color:
+                                  state.summary.elementAt(index).category.color,
+                              //spended by the category
+                              value: (state.summary
+                                          .elementAt(index)
+                                          .percentage /
+                                      100) *
+                                  //animating by appying muliplication for the value 0 to 1.
+                                  _animation.value,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: GestureDetector(
+                        onTap: () {
+                          if (_overlayEntry == null) {
+                            _showDurationForSummary(context);
+                          } else {
+                            _removeOverlay();
+                          }
+                        },
+                        child: Container(
+                          width: 50.w,
+                          height: 50.w,
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.keyboard_arrow_down),
+                              Text(
+                                  switch (state.summaryBy) {
+                                    Summary.week => "Week",
+                                    Summary.month => "Month",
+                                    Summary.year => "Year",
+                                  },
+                                  style: Get.theme.textTheme.titleMedium),
+                              const SizedBox(
+                                width: 10,
+                              )
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: GestureDetector(
-                  onTap: () {
-                    if (_overlayEntry == null) {
-                      _showOverlay(context);
-                    } else {
-                      _removeOverlay();
-                    }
-                  },
-                  child: Container(
-                    width: 50.w,
-                    height: 50.w,
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.keyboard_arrow_down),
-                        Text(
-                            switch (state.summaryBy) {
-                              Summary.week => "Week",
-                              Summary.month => "Month",
-                              Summary.year => "Year",
-                            },
-                            style: Get.theme.textTheme.titleMedium),
-                        const SizedBox(
-                          width: 10,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
+                    )
+                  ],
+                );
+              }),
         );
       },
     );

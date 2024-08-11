@@ -14,14 +14,11 @@ A new Flutter project.
 
 ## Report
 
-Effectively used Clean Architecture, dependency injection which helped to do unit test effectively, Used Bloc to sperate logic, state and UI, 
-combined with GetX, able to use navigation and other dependencies within bloc without BuildContext, Used SQLite (sqflite dart package) to store the data, 
-created seprate DataBaseHelper function to manage database quires,
-
-used Sizer dart package to effectively sizing Widget based on mobile size.
-
-used single Loading indicator which can be managed from everywhere.
-
-Implemented Daily Reminder for daily notification
-
-written unit test for each use case with mocked repository, ensuring respective methods are calling from repository and nothing else, written unit test for each DataModel json sterilization,
+1. Effectively used Clean Architecture and dependency injection, which helped to do unit test effectively,
+2. Used Bloc to sperate logic, state and UI, combined with GetX, able to use navigation and other dependencies within bloc without BuildContext,
+3. Used SQLite (sqflite dart package) to store the data, created seprate DataBaseHelper function to manage database quires,
+4. used Sizer dart package to effectively sizing Widget based on mobile size.
+5. used single Loading indicator which can be managed from everywhere.
+6. Implemented Daily Reminder for daily notification
+7. used animation for Summary circle, expense tile which can be deleted by swiping it
+8. written unit test for each use case with mocked repository, ensuring respective methods are calling from repository and nothing else, written unit test for each Data model for ensuring json sterilization works fine,
