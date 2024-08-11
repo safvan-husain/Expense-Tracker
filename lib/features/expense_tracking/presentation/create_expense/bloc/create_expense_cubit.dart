@@ -7,9 +7,9 @@ import 'package:expense_tracker/features/expense_tracking/data/models/expense_mo
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense_category.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/use_case/get_all_category.dart';
-import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/widgets/select_category_box.dart';
+import 'package:expense_tracker/features/expense_tracking/presentation/widgets/select_category_box.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/view_expenses/bloc/expense_bloc.dart';
-import 'package:expense_tracker/features/expense_tracking/presentation/view_expenses/edit_expense_page.dart';
+import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/edit_expense_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -176,6 +176,8 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
     );
     // clearing input.
     initialState();
+
+    ExpenseCubit.instance.calculateSummary();
     ExpenseCubit.instance.changeLoadingState(false);
     Get.back();
   }

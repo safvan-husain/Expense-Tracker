@@ -2,7 +2,7 @@ import 'package:expense_tracker/core/utils/date_formatter.dart';
 import 'package:expense_tracker/features/expense_tracking/data/models/expense_model.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/bloc/create_expense_cubit.dart';
-import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/widgets/button.dart';
+import 'package:expense_tracker/features/expense_tracking/presentation/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
