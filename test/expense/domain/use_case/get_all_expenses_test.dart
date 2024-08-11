@@ -1,8 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:expense_tracker/core/failures/expense_failures.dart';
 import 'package:expense_tracker/core/usecases/usecase.dart';
+import 'package:expense_tracker/features/expense_tracking/data/models/category_model.dart';
 import 'package:expense_tracker/features/expense_tracking/data/models/expense_model.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/use_case/get_expense_history.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -20,7 +22,17 @@ void main() async {
   });
 
   final List<ExpenseModel> mockExpenses = [
-    ExpenseModel(category: "test", discription: 'test', date: DateTime.now())
+    ExpenseModel(
+      category: const CategoryModel(
+        color: Colors.red,
+        title: 'test',
+        id: 0,
+      ),
+      description: 'test',
+      date: DateTime.now(),
+      id: 0,
+      money: 0,
+    )
   ];
 
   group("get history of expenses", () {

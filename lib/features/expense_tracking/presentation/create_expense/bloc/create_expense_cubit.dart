@@ -10,14 +10,11 @@ import 'package:expense_tracker/features/expense_tracking/domain/use_case/get_al
 import 'package:expense_tracker/features/expense_tracking/presentation/view_expenses/bloc/expense_bloc.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/view_expenses/edit_expense_page.dart';
 import 'package:flutter/material.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:get/get.dart';
 
 import 'package:expense_tracker/features/expense_tracking/domain/use_case/create_new_category.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/use_case/create_new_expense.dart';
-import 'package:expense_tracker/features/expense_tracking/domain/use_case/delete_expense.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/use_case/edit_expense.dart';
-import 'package:expense_tracker/features/expense_tracking/domain/use_case/get_expense_history.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/create_expense_page.dart';
 
 part 'create_expense_state.dart';
@@ -123,7 +120,6 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
         emit(CreateExpenseState.initial()
             .copyWith(categories: state.categories));
         Get.back();
-        //todod
       },
     );
   }
@@ -134,7 +130,6 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
   }
 
   void showCategories() async {
-    emit(state.copyWith(isCreatingNewCategory: false));
     var result = await getAllCategory.call(NoParams());
     result.fold(
       (l) {},
@@ -148,7 +143,7 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
     );
   }
 
-  void showExpenseData(Expense expense) {
+  void showEditExpense(Expense expense) {
     emit(
       state.copyWith(
         selectedCategory: expense.category,
@@ -159,10 +154,9 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
       ),
     );
     Get.to(
-        () => EditExpensePage(
-              expense: expense,
-            ),
-        transition: Transition.downToUp);
+      () => EditExpensePage(expense: expense),
+      transition: Transition.downToUp,
+    );
   }
 
   void editExpenseData(Expense expense) async {

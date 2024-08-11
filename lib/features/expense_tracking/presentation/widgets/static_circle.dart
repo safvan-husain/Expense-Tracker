@@ -36,7 +36,7 @@ class _StaticCircleState extends State<StaticCircle> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: ListView(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               shrinkWrap: true,
               children: buttonContent
                   .map(
@@ -73,7 +73,7 @@ class _StaticCircleState extends State<StaticCircle> {
 
   void _showOverlay(BuildContext context) {
     _overlayEntry = _createOverlayEntry(context);
-    Overlay.of(context)!.insert(_overlayEntry!);
+    Overlay.of(context).insert(_overlayEntry!);
   }
 
   void _removeOverlay() {
@@ -140,6 +140,7 @@ class _StaticCircleState extends State<StaticCircle> {
                 width: 50.w,
                 height: 50.w,
               ),
+              //generating all the category with its color and volume.
               ...List.generate(
                 state.summary.length,
                 (index) {
@@ -159,8 +160,9 @@ class _StaticCircleState extends State<StaticCircle> {
                       width: 50.w,
                       height: 50.w,
                       child: CircularProgressIndicator(
-                        strokeWidth: 20,
+                        strokeWidth: 30,
                         color: state.summary.elementAt(index).category.color,
+                        //spended by the category
                         value: state.summary.elementAt(index).percentage / 100,
                       ),
                     ),

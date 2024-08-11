@@ -25,7 +25,7 @@ class ExpenseModel extends Expense {
   }
 
   factory ExpenseModel.fromMap(
-      Map<String, dynamic> map, CategoryModel Function(int id) getCategory) {
+      Map<String, dynamic> map, ExpenseCategory Function(int id) getCategory) {
     return ExpenseModel(
       id: map['id'],
       category: getCategory(map['category']),

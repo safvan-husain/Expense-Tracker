@@ -2,6 +2,7 @@ import 'package:expense_tracker/core/utils/date_formatter.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/bloc/create_expense_cubit.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/create_expense_page.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/view_expenses/bloc/expense_bloc.dart';
+import 'package:expense_tracker/features/expense_tracking/presentation/widgets/expense_tile.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/widgets/static_circle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,20 +29,15 @@ class HomeScreen extends StatelessWidget {
                 width: 90.w,
                 child: GestureDetector(
                   onPanUpdate: (details) {
-                    // WidgetsBinding.instance.addPostFrameCallback((_) {
+                    // detecting a scroll for showing full list view in full screen.
                     if (details.delta.dy > 15) {
-                      ExpenseCubit.instance.handleTopScroll(true);
+                      ExpenseCubit.instance.handleScroll(true);
                     } else if (details.delta.dy < -15) {
-                      ExpenseCubit.instance.handleTopScroll(false);
+                      ExpenseCubit.instance.handleScroll(false);
                     }
-                    // });
                   },
                   child: Stack(
                     children: [
-                      // SizedBox(
-                      //   height: 100.h,
-                      //   width: 90.w,
-                      // ),
                       AnimatedPositioned(
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.easeIn,
@@ -95,6 +91,10 @@ class HomeScreen extends StatelessWidget {
                                 width: 90.w,
                                 child: NotificationListener<ScrollNotification>(
                                   onNotification: (scrollNotification) {
+                                    // listening to the ListView scroll to move up and show
+                                    //summary when a scroll to upward happen when the list is aleardy in top.
+
+                                    //giving delay so that won't try to build while the frame being updated by the scroll in listview.
                                     Future.delayed(
                                       const Duration(milliseconds: 200),
                                       () {
@@ -104,38 +104,29 @@ class HomeScreen extends StatelessWidget {
                                                   0 &&
                                               scrollNotification.overscroll <
                                                   -2) {
-                                            print("happening");
                                             ExpenseCubit.instance
-                                                .handleTopScroll(true);
+                                                .handleScroll(true);
                                           }
                                         }
                                       },
                                     );
-                                    Future.microtask(() {});
-                                    // WidgetsBinding.instance
-                                    //     .addPostFrameCallback((_) {
-                                    //   if (scrollNotification
-                                    //       is OverscrollNotification) {
-                                    //     if (scrollNotification.velocity == 0 &&
-                                    //         scrollNotification.overscroll <
-                                    //             -2) {
-                                    //       print("happening");
-                                    //       ExpenseCubit.instance
-                                    //           .handleTopScroll(true);
-                                    //     }
-                                    //   }
-                                    // });
 
                                     return false;
                                   },
                                   child: ListView.builder(
-                                    controller: PostFrameScrollController(),
+                                    // controller: PostFrameScrollController(),
                                     physics: state.screenPosition ==
                                             ScreenPosition.bottom
                                         ? null
-                                        : NeverScrollableScrollPhysics(),
-                                    itemCount: state.expenses.length,
+                                        : const NeverScrollableScrollPhysics(),
+                                    itemCount: state.expenses.length + 1,
                                     itemBuilder: (context, index) {
+                                      // providing a space at the end, so the last elment will not be blinded by floating button.
+                                      if (index == state.expenses.length) {
+                                        return const SizedBox(
+                                          height: 50,
+                                        );
+                                      }
                                       return ExpenseTile(
                                         index: index,
                                         state: state,
@@ -179,9 +170,9 @@ class HomeScreen extends StatelessWidget {
       child: Stack(
         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: const Icon(Icons.menu),
+          const Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: Icon(Icons.menu),
           ),
           Align(
             alignment: Alignment.center,
@@ -196,94 +187,7 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class ExpenseTile extends StatelessWidget {
-  final int index;
-  final ExpenseState state;
-  const ExpenseTile({
-    super.key,
-    required this.index,
-    required this.state,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        //if index 0 show date anyway otherwise compare with the previous to check both are on same day.
-        if (index == 0 ||
-            !isSameDay(state.expenses.elementAt(index - 1).date,
-                state.expenses.elementAt(index).date))
-          Text(formatDate(
-            state.expenses.elementAt(index).date,
-            showDay: true,
-          )),
-        Container(
-          margin: EdgeInsets.all(10),
-          height: 60,
-          width: 100.w,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: g.Get.theme.primaryColorDark,
-          ),
-          child: Row(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: state.expenses.elementAt(index).category.color,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                    )),
-                height: 60,
-                width: 60,
-                alignment: Alignment.center,
-                child: Text(
-                  "\$ ${state.expenses.elementAt(index).money}",
-                  style: Get.textTheme.bodyMedium?.copyWith(
-                    color: Get.theme.scaffoldBackgroundColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              SizedBox(
-                width: 50.w,
-                child: Text(
-                  state.expenses.elementAt(index).description,
-                  style: Get.textTheme.bodyMedium,
-                  maxLines: 2,
-                ),
-              ),
-              Spacer(),
-              Row(
-                children: [
-                  GestureDetector(
-                      onTap: () {
-                        CreateExpenseCubit.instance
-                            .showExpenseData(state.expenses.elementAt(index));
-                      },
-                      child: Icon(Icons.edit)),
-                  GestureDetector(
-                      onTap: () {
-                        ExpenseCubit.instance
-                            .deleteExpenseData(state.expenses.elementAt(index));
-                      },
-                      child: Icon(Icons.delete)),
-                ],
-              ),
-              SizedBox(
-                width: 10,
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
+//using this for
 class PostFrameScrollController extends ScrollController {
   @override
   void notifyListeners() {

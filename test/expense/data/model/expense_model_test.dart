@@ -2,15 +2,20 @@ import 'dart:convert';
 
 import 'package:expense_tracker/features/expense_tracking/data/models/expense_model.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense.dart';
+import 'package:expense_tracker/features/expense_tracking/domain/entity/expense_category.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../fixture_reader.dart';
+import '../../domain/use_case/dependencies.mocks.dart';
 
 void main() async {
+  ExpenseCategory category = MockExpenseCategory();
   final ExpenseModel expense = ExpenseModel(
-    category: "test",
-    discription: "test",
+    category: category,
+    description: "test",
     date: DateTime.now(),
+    id: 0,
+    money: 0,
   );
 
   test(
@@ -25,7 +30,7 @@ void main() async {
     () async {
       final Map<String, dynamic> jsonData =
           json.decode(fixture('expense.json'));
-      final result = ExpenseModel.fromMap(jsonData);
+      final result = ExpenseModel.fromMap(jsonData, (id) => category);
       expect(expense, result);
     },
   );

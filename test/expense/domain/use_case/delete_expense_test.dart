@@ -21,11 +21,11 @@ void main() async {
     test(
       "should return true upon successful deletion",
       () async {
-        when(mockExpenseRepository.deleteExpense())
+        when(mockExpenseRepository.deleteExpense(0))
             .thenAnswer((_) async => const Right(true));
-        final result = await useCase.call(const DeleteExpenseParams('test'));
+        final result = await useCase.call(const DeleteExpenseParams(0));
         expect(result, const Right(true));
-        verify(mockExpenseRepository.deleteExpense());
+        verify(mockExpenseRepository.deleteExpense(0));
         verifyNoMoreInteractions(mockExpenseRepository);
       },
     );
@@ -33,11 +33,11 @@ void main() async {
     test(
       "should return false upon unsuccessful deletion",
       () async {
-        when(mockExpenseRepository.deleteExpense())
+        when(mockExpenseRepository.deleteExpense(0))
             .thenAnswer((_) async => const Right(false));
-        final result = await useCase.call(const DeleteExpenseParams('test'));
+        final result = await useCase.call(const DeleteExpenseParams(0));
         expect(result, const Right(false));
-        verify(mockExpenseRepository.deleteExpense());
+        verify(mockExpenseRepository.deleteExpense(0));
         verifyNoMoreInteractions(mockExpenseRepository);
       },
     );
@@ -46,11 +46,11 @@ void main() async {
     test(
       "should return failure upon Error",
       () async {
-        when(mockExpenseRepository.deleteExpense())
+        when(mockExpenseRepository.deleteExpense(0))
             .thenAnswer((_) async => Left(failure));
-        final result = await useCase.call(const DeleteExpenseParams('test'));
+        final result = await useCase.call(const DeleteExpenseParams(0));
         expect(result, Left(failure));
-        verify(mockExpenseRepository.deleteExpense());
+        verify(mockExpenseRepository.deleteExpense(0));
         verifyNoMoreInteractions(mockExpenseRepository);
       },
     );

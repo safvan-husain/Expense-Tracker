@@ -25,11 +25,11 @@ void main() async {
     test(
       "should return Category upon successful creation",
       () async {
-        when(mockExpenseRepository.createNewCategory())
+        when(mockExpenseRepository.createNewCategory(any))
             .thenAnswer((_) async => Right(category));
-        final result = await useCase.call(NewCategoryParams());
+        final result = await useCase.call(NewCategoryParams(category));
         expect(result, Right(category));
-        verify(mockExpenseRepository.createNewCategory());
+        verify(mockExpenseRepository.createNewCategory(category));
         verifyNoMoreInteractions(mockExpenseRepository);
       },
     );
@@ -37,11 +37,11 @@ void main() async {
     test(
       "should return failure upon Error",
       () async {
-        when(mockExpenseRepository.deleteExpense())
+        when(mockExpenseRepository.deleteExpense(0))
             .thenAnswer((_) async => Left(failure));
-        final result = await useCase.call(NewCategoryParams());
+        final result = await useCase.call(NewCategoryParams(category));
         expect(result, Left(failure));
-        verify(mockExpenseRepository.deleteExpense());
+        verify(mockExpenseRepository.deleteExpense(0));
         verifyNoMoreInteractions(mockExpenseRepository);
       },
     );

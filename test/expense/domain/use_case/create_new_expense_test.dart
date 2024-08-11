@@ -21,11 +21,11 @@ void main() async {
   test(
     "should return Expense upon successful creation",
     () async {
-      when(mockExpenseRepository.createNewExpense())
+      when(mockExpenseRepository.createNewExpense(mockExpense))
           .thenAnswer((_) async => Right(mockExpense));
-      final result = await useCase.call(NewExpenseParams());
+      final result = await useCase.call(NewExpenseParams(mockExpense));
       expect(result, Right(mockExpense));
-      verify(mockExpenseRepository.createNewExpense());
+      verify(mockExpenseRepository.createNewExpense(mockExpense));
       verifyNoMoreInteractions(mockExpenseRepository);
     },
   );

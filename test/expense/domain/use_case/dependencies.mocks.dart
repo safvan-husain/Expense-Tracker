@@ -3,17 +3,17 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
+import 'dart:async' as _i6;
 import 'dart:ui' as _i3;
 
 import 'package:dartz/dartz.dart' as _i2;
-import 'package:expense_tracker/core/failures/expense_failures.dart' as _i6;
+import 'package:expense_tracker/core/failures/expense_failures.dart' as _i7;
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense.dart'
-    as _i7;
-import 'package:expense_tracker/features/expense_tracking/domain/entity/expense_category.dart'
     as _i8;
-import 'package:expense_tracker/features/expense_tracking/domain/repository/expense_repository_interface.dart'
+import 'package:expense_tracker/features/expense_tracking/domain/entity/expense_category.dart'
     as _i4;
+import 'package:expense_tracker/features/expense_tracking/domain/repository/expense_repository_interface.dart'
+    as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i9;
 
@@ -50,8 +50,19 @@ class _FakeColor_1 extends _i1.SmartFake implements _i3.Color {
         );
 }
 
-class _FakeDateTime_2 extends _i1.SmartFake implements DateTime {
-  _FakeDateTime_2(
+class _FakeExpenseCategory_2 extends _i1.SmartFake
+    implements _i4.ExpenseCategory {
+  _FakeExpenseCategory_2(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeDateTime_3 extends _i1.SmartFake implements DateTime {
+  _FakeDateTime_3(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -64,17 +75,17 @@ class _FakeDateTime_2 extends _i1.SmartFake implements DateTime {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockExpenseRepositoryInterface extends _i1.Mock
-    implements _i4.ExpenseRepositoryInterface {
+    implements _i5.ExpenseRepositoryInterface {
   @override
-  _i5.Future<_i2.Either<_i6.Failure, List<_i7.Expense>>> getAllExpenses() =>
+  _i6.Future<_i2.Either<_i7.Failure, List<_i8.Expense>>> getAllExpenses() =>
       (super.noSuchMethod(
         Invocation.method(
           #getAllExpenses,
           [],
         ),
         returnValue:
-            _i5.Future<_i2.Either<_i6.Failure, List<_i7.Expense>>>.value(
-                _FakeEither_0<_i6.Failure, List<_i7.Expense>>(
+            _i6.Future<_i2.Either<_i7.Failure, List<_i8.Expense>>>.value(
+                _FakeEither_0<_i7.Failure, List<_i8.Expense>>(
           this,
           Invocation.method(
             #getAllExpenses,
@@ -82,126 +93,156 @@ class MockExpenseRepositoryInterface extends _i1.Mock
           ),
         )),
         returnValueForMissingStub:
-            _i5.Future<_i2.Either<_i6.Failure, List<_i7.Expense>>>.value(
-                _FakeEither_0<_i6.Failure, List<_i7.Expense>>(
+            _i6.Future<_i2.Either<_i7.Failure, List<_i8.Expense>>>.value(
+                _FakeEither_0<_i7.Failure, List<_i8.Expense>>(
           this,
           Invocation.method(
             #getAllExpenses,
             [],
           ),
         )),
-      ) as _i5.Future<_i2.Either<_i6.Failure, List<_i7.Expense>>>);
+      ) as _i6.Future<_i2.Either<_i7.Failure, List<_i8.Expense>>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i7.Expense>> createNewExpense() =>
+  _i6.Future<_i2.Either<_i7.Failure, List<_i4.ExpenseCategory>>>
+      getAllCategory() => (super.noSuchMethod(
+            Invocation.method(
+              #getAllCategory,
+              [],
+            ),
+            returnValue: _i6.Future<
+                    _i2.Either<_i7.Failure, List<_i4.ExpenseCategory>>>.value(
+                _FakeEither_0<_i7.Failure, List<_i4.ExpenseCategory>>(
+              this,
+              Invocation.method(
+                #getAllCategory,
+                [],
+              ),
+            )),
+            returnValueForMissingStub: _i6.Future<
+                    _i2.Either<_i7.Failure, List<_i4.ExpenseCategory>>>.value(
+                _FakeEither_0<_i7.Failure, List<_i4.ExpenseCategory>>(
+              this,
+              Invocation.method(
+                #getAllCategory,
+                [],
+              ),
+            )),
+          ) as _i6.Future<_i2.Either<_i7.Failure, List<_i4.ExpenseCategory>>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, _i8.Expense>> createNewExpense(
+          _i8.Expense? expense) =>
       (super.noSuchMethod(
         Invocation.method(
           #createNewExpense,
-          [],
+          [expense],
         ),
-        returnValue: _i5.Future<_i2.Either<_i6.Failure, _i7.Expense>>.value(
-            _FakeEither_0<_i6.Failure, _i7.Expense>(
+        returnValue: _i6.Future<_i2.Either<_i7.Failure, _i8.Expense>>.value(
+            _FakeEither_0<_i7.Failure, _i8.Expense>(
           this,
           Invocation.method(
             #createNewExpense,
-            [],
+            [expense],
           ),
         )),
         returnValueForMissingStub:
-            _i5.Future<_i2.Either<_i6.Failure, _i7.Expense>>.value(
-                _FakeEither_0<_i6.Failure, _i7.Expense>(
+            _i6.Future<_i2.Either<_i7.Failure, _i8.Expense>>.value(
+                _FakeEither_0<_i7.Failure, _i8.Expense>(
           this,
           Invocation.method(
             #createNewExpense,
-            [],
+            [expense],
           ),
         )),
-      ) as _i5.Future<_i2.Either<_i6.Failure, _i7.Expense>>);
+      ) as _i6.Future<_i2.Either<_i7.Failure, _i8.Expense>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, bool>> deleteExpense() =>
+  _i6.Future<_i2.Either<_i7.Failure, void>> deleteExpense(int? id) =>
       (super.noSuchMethod(
         Invocation.method(
           #deleteExpense,
-          [],
+          [id],
         ),
-        returnValue: _i5.Future<_i2.Either<_i6.Failure, bool>>.value(
-            _FakeEither_0<_i6.Failure, bool>(
+        returnValue: _i6.Future<_i2.Either<_i7.Failure, void>>.value(
+            _FakeEither_0<_i7.Failure, void>(
           this,
           Invocation.method(
             #deleteExpense,
-            [],
+            [id],
           ),
         )),
         returnValueForMissingStub:
-            _i5.Future<_i2.Either<_i6.Failure, bool>>.value(
-                _FakeEither_0<_i6.Failure, bool>(
+            _i6.Future<_i2.Either<_i7.Failure, void>>.value(
+                _FakeEither_0<_i7.Failure, void>(
           this,
           Invocation.method(
             #deleteExpense,
-            [],
+            [id],
           ),
         )),
-      ) as _i5.Future<_i2.Either<_i6.Failure, bool>>);
+      ) as _i6.Future<_i2.Either<_i7.Failure, void>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i7.Expense>> editExpense() =>
+  _i6.Future<_i2.Either<_i7.Failure, _i8.Expense>> editExpense(
+          _i8.Expense? expense) =>
       (super.noSuchMethod(
         Invocation.method(
           #editExpense,
-          [],
+          [expense],
         ),
-        returnValue: _i5.Future<_i2.Either<_i6.Failure, _i7.Expense>>.value(
-            _FakeEither_0<_i6.Failure, _i7.Expense>(
+        returnValue: _i6.Future<_i2.Either<_i7.Failure, _i8.Expense>>.value(
+            _FakeEither_0<_i7.Failure, _i8.Expense>(
           this,
           Invocation.method(
             #editExpense,
-            [],
+            [expense],
           ),
         )),
         returnValueForMissingStub:
-            _i5.Future<_i2.Either<_i6.Failure, _i7.Expense>>.value(
-                _FakeEither_0<_i6.Failure, _i7.Expense>(
+            _i6.Future<_i2.Either<_i7.Failure, _i8.Expense>>.value(
+                _FakeEither_0<_i7.Failure, _i8.Expense>(
           this,
           Invocation.method(
             #editExpense,
-            [],
+            [expense],
           ),
         )),
-      ) as _i5.Future<_i2.Either<_i6.Failure, _i7.Expense>>);
+      ) as _i6.Future<_i2.Either<_i7.Failure, _i8.Expense>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i8.ExpenseCategory>>
-      createNewCategory() => (super.noSuchMethod(
-            Invocation.method(
-              #createNewCategory,
-              [],
-            ),
-            returnValue:
-                _i5.Future<_i2.Either<_i6.Failure, _i8.ExpenseCategory>>.value(
-                    _FakeEither_0<_i6.Failure, _i8.ExpenseCategory>(
-              this,
-              Invocation.method(
-                #createNewCategory,
-                [],
-              ),
-            )),
-            returnValueForMissingStub:
-                _i5.Future<_i2.Either<_i6.Failure, _i8.ExpenseCategory>>.value(
-                    _FakeEither_0<_i6.Failure, _i8.ExpenseCategory>(
-              this,
-              Invocation.method(
-                #createNewCategory,
-                [],
-              ),
-            )),
-          ) as _i5.Future<_i2.Either<_i6.Failure, _i8.ExpenseCategory>>);
+  _i6.Future<_i2.Either<_i7.Failure, _i4.ExpenseCategory>> createNewCategory(
+          _i4.ExpenseCategory? category) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #createNewCategory,
+          [category],
+        ),
+        returnValue:
+            _i6.Future<_i2.Either<_i7.Failure, _i4.ExpenseCategory>>.value(
+                _FakeEither_0<_i7.Failure, _i4.ExpenseCategory>(
+          this,
+          Invocation.method(
+            #createNewCategory,
+            [category],
+          ),
+        )),
+        returnValueForMissingStub:
+            _i6.Future<_i2.Either<_i7.Failure, _i4.ExpenseCategory>>.value(
+                _FakeEither_0<_i7.Failure, _i4.ExpenseCategory>(
+          this,
+          Invocation.method(
+            #createNewCategory,
+            [category],
+          ),
+        )),
+      ) as _i6.Future<_i2.Either<_i7.Failure, _i4.ExpenseCategory>>);
 }
 
 /// A class which mocks [ExpenseCategory].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockExpenseCategory extends _i1.Mock implements _i8.ExpenseCategory {
+class MockExpenseCategory extends _i1.Mock implements _i4.ExpenseCategory {
   MockExpenseCategory() {
     _i1.throwOnMissingStub(this);
   }
@@ -225,6 +266,12 @@ class MockExpenseCategory extends _i1.Mock implements _i8.ExpenseCategory {
       ) as _i3.Color);
 
   @override
+  int get id => (super.noSuchMethod(
+        Invocation.getter(#id),
+        returnValue: 0,
+      ) as int);
+
+  @override
   List<Object?> get props => (super.noSuchMethod(
         Invocation.getter(#props),
         returnValue: <Object?>[],
@@ -234,33 +281,45 @@ class MockExpenseCategory extends _i1.Mock implements _i8.ExpenseCategory {
 /// A class which mocks [Expense].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockExpense extends _i1.Mock implements _i7.Expense {
+class MockExpense extends _i1.Mock implements _i8.Expense {
   MockExpense() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  String get category => (super.noSuchMethod(
+  int get id => (super.noSuchMethod(
+        Invocation.getter(#id),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  int get money => (super.noSuchMethod(
+        Invocation.getter(#money),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  _i4.ExpenseCategory get category => (super.noSuchMethod(
         Invocation.getter(#category),
-        returnValue: _i9.dummyValue<String>(
+        returnValue: _FakeExpenseCategory_2(
           this,
           Invocation.getter(#category),
         ),
-      ) as String);
+      ) as _i4.ExpenseCategory);
 
   @override
   String get description => (super.noSuchMethod(
-        Invocation.getter(#discription),
+        Invocation.getter(#description),
         returnValue: _i9.dummyValue<String>(
           this,
-          Invocation.getter(#discription),
+          Invocation.getter(#description),
         ),
       ) as String);
 
   @override
   DateTime get date => (super.noSuchMethod(
         Invocation.getter(#date),
-        returnValue: _FakeDateTime_2(
+        returnValue: _FakeDateTime_3(
           this,
           Invocation.getter(#date),
         ),

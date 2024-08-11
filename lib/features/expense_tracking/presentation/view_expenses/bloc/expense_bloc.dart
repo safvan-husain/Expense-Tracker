@@ -1,21 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:math';
 
 import 'package:bloc/bloc.dart' as b;
 import 'package:expense_tracker/core/usecases/usecase.dart';
-import 'package:expense_tracker/features/expense_tracking/data/models/category_model.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense_category.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/summary_item.dart';
-import 'package:expense_tracker/features/expense_tracking/presentation/view_expenses/edit_expense_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:expense_tracker/features/expense_tracking/domain/use_case/delete_expense.dart';
-import 'package:expense_tracker/features/expense_tracking/domain/use_case/edit_expense.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/use_case/get_expense_history.dart';
 
-part 'expense_event.dart';
 part 'expense_state.dart';
 
 enum ScreenPosition { top, bottom }
@@ -31,14 +26,15 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
     required this.getAllExpenses,
   }) : super(const ExpenseState(
           summaryBy: Summary.week,
-          isListScrollable: false,
+          // isListScrollable: false,
           screenPosition: ScreenPosition.top,
           expenses: [],
           summary: [],
         ));
 
-  void handleTopScroll(bool isDown) async {
-    await Future.delayed(Duration(microseconds: 500));
+  ///there is another scroll -> listView, so this scroll applay at top only or when list view having NeverScrollPhysics.
+  void handleScroll(bool isDown) async {
+    //when scrolling down show top, else bottom.
     if (isDown) {
       if (state.screenPosition == ScreenPosition.bottom) {
         emit(state.copyWith(screenPosition: ScreenPosition.top));
@@ -53,9 +49,10 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
   void loadExpenseHistory() async {
     var result = await getAllExpenses.call(NoParams());
     result.fold(
-      (l) {},
+      (l) {
+        Get.snackbar("Failure", "failed to get data from database");
+      },
       (r) {
-        print("loaded expenses ${r}");
         emit(state.copyWith(expenses: r));
         calculateSummary();
       },
@@ -74,12 +71,7 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
     calculateSummary();
   }
 
-  void addExpenseToHistory(Expense expense) {
-    // emit(state.copyWith(expenses: [expense, ...state.expenses]));
-
-    calculateSummary();
-  }
-
+  ///replace any expense based on the id, if doesn't exist, change nothing.
   void replaceAExpense(Expense expense) {
     emit(state.copyWith(
         expenses: state.expenses.map((e) {
@@ -108,7 +100,9 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
     if (date == null) return;
     var result = await getAllExpenses.call(NoParams());
     result.fold(
-      (l) {},
+      (l) {
+        Get.snackbar("Failure", "failed to get data from database");
+      },
       (r) {
         var filtered = r
             .where((element) =>
@@ -125,22 +119,27 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
   void calculateSummary() async {
     var result = await getAllExpenses.call(NoParams());
     result.fold(
-      (l) {},
+      (l) {
+        Get.snackbar("Failure", "failed to get data from database");
+      },
       (expenses) {
+        // storing money spend by category, using categryId as keys.
         Map<int, int> summaryByCategory = {};
         int totalMoneySpend = 0;
-        for (var element in filterDates(expenses, state.summaryBy)) {
+        for (var element
+            in filterExpenseWithinDuration(expenses, state.summaryBy)) {
+          //when category exist in summary, add amount to it.
           totalMoneySpend += element.money;
           if (summaryByCategory.containsKey(element.category.id)) {
             summaryByCategory[element.category.id] =
                 summaryByCategory[element.category.id]! + element.money;
           } else {
+            //when category not initated alredy, creating one.
             summaryByCategory
                 .addEntries({element.category.id: element.money}.entries);
-            // summaryByCategory[element.category] = element.money;s
           }
         }
-
+//turning it into percentage and list.
         List<SummaryItem> summaryByCategoryPercentage =
             summaryByCategory.entries.map((e) {
           ExpenseCategory cat = expenses
@@ -158,28 +157,29 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
   }
 }
 
-List<Expense> filterDates(List<Expense> expenses, Summary duration) {
+List<Expense> filterExpenseWithinDuration(
+    List<Expense> expenses, Summary duration) {
   DateTime now = DateTime.now();
 
   return expenses.where((expense) {
     switch (duration) {
       case Summary.week:
         DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-        DateTime endOfWeek = startOfWeek.add(Duration(days: 7));
+        DateTime endOfWeek = startOfWeek.add(const Duration(days: 7));
         return expense.date.isAfter(startOfWeek) &&
             expense.date.isBefore(endOfWeek);
 
       case Summary.month:
         DateTime startOfMonth = DateTime(now.year, now.month, 1);
-        DateTime endOfMonth =
-            DateTime(now.year, now.month + 1, 1).subtract(Duration(seconds: 1));
+        DateTime endOfMonth = DateTime(now.year, now.month + 1, 1)
+            .subtract(const Duration(seconds: 1));
         return expense.date.isAfter(startOfMonth) &&
             expense.date.isBefore(endOfMonth);
 
       case Summary.year:
         DateTime startOfYear = DateTime(now.year, 1, 1);
         DateTime endOfYear =
-            DateTime(now.year + 1, 1, 1).subtract(Duration(seconds: 1));
+            DateTime(now.year + 1, 1, 1).subtract(const Duration(seconds: 1));
         return expense.date.isAfter(startOfYear) &&
             expense.date.isBefore(endOfYear);
 
