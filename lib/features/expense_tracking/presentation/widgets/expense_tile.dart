@@ -111,6 +111,9 @@ class _ExpenseTileState extends State<ExpenseTile> {
                                             .showEditExpense(widget
                                                 .state.expenses
                                                 .elementAt(widget.index));
+                                        setState(() {
+                                          position = TilePosition.center;
+                                        });
                                       }, "Edit"),
                                     ],
                                   )
@@ -189,11 +192,18 @@ class _ExpenseTileState extends State<ExpenseTile> {
                                       const SizedBox(
                                         width: 10,
                                       ),
-                                      _buildButton(() {
-                                        ExpenseCubit.instance.deleteExpenseData(
-                                            widget.state.expenses
-                                                .elementAt(widget.index));
-                                      }, "Delete")
+                                      _buildButton(
+                                        () {
+                                          ExpenseCubit.instance
+                                              .deleteExpenseData(widget
+                                                  .state.expenses
+                                                  .elementAt(widget.index));
+                                          setState(() {
+                                            position = TilePosition.center;
+                                          });
+                                        },
+                                        "Delete",
+                                      )
                                     ],
                                   )
                                 ],
