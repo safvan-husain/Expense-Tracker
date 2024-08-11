@@ -8,6 +8,10 @@ A new Flutter project.
 2. connect mobile device that have enabled usb debugging.
 3. run - flutter run from root directory, or the best, use Flutter VS Code extention, and run "run without debugging"
 
+## note
+
+1. swipe left Expense Tile to edit, swipe right to delete.
+
 ## Report
 
 Effectivly used Clean Archtecture, dependency injection which helped to do unit test effectivly,
