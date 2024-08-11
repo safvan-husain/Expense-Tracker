@@ -51,7 +51,7 @@ class HomeScreen extends StatelessWidget {
                                   alignment: Alignment.topCenter,
                                   child: Text(
                                     "No Expense has been recorded yet",
-                                    style: Get.textTheme.bodyMedium,
+                                    style: Get.textTheme.titleSmall,
                                   ),
                                 )
                               : Column(

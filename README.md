@@ -6,7 +6,7 @@ A new Flutter project.
 
 1. ensure flutter, android sdk is installed and added to env path.
 2. connect mobile device that have enabled usb debugging.
-3. run - flutter run from root directory, or the best use Flutter Vs code extention, and run without debugging
+3. run - flutter run from root directory, or the best, use Flutter VS Code extention, and run "run without debugging"
 
 ## Report
 
