@@ -1,16 +1,24 @@
-# expense_tracker
+# Expense Tracker
 
 A new Flutter project.
 
-## Getting Started
+## Running instruction
 
-This project is a starting point for a Flutter application.
+1. ensure flutter, android sdk is installed and added to env path.
+2. connect mobile device that have enabled usb debugging.
+3. run - flutter run from root directory, or the best use Flutter Vs code extention, and run without debugging
 
-A few resources to get you started if this is your first Flutter project:
+## Report
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Effectivly used Clean Archtecture, dependency injection which helped to do unit test effectivly,
+Used Bloc to sperate logic, state and UI, compined with GetX, able to use navigation and other dependecies within bloc without BuildContext,
+Used SQLite (sqflite dart package) to store the data, created seprate DataBaseHelper function to manage database quries,
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+used Sizer dart package to effectivly sizing Widget based on mobile size.
+
+used singel Loading indicator which can be managed from everywhere.
+
+Implimented Daily Reminder for daily notification
+
+written unit test for each use case with mocked repository, ensuring respective methods are calling from repositoy and nothing else,
+written unit test for each DataModel json serilization,

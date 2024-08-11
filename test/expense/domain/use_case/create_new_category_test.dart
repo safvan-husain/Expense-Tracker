@@ -37,11 +37,11 @@ void main() async {
     test(
       "should return failure upon Error",
       () async {
-        when(mockExpenseRepository.deleteExpense(0))
+        when(mockExpenseRepository.createNewCategory(any))
             .thenAnswer((_) async => Left(failure));
         final result = await useCase.call(NewCategoryParams(category));
         expect(result, Left(failure));
-        verify(mockExpenseRepository.deleteExpense(0));
+        verify(mockExpenseRepository.createNewCategory(category));
         verifyNoMoreInteractions(mockExpenseRepository);
       },
     );

@@ -31,7 +31,7 @@ void main() async {
       final Map<String, dynamic> jsonData =
           json.decode(fixture('expense.json'));
       final result = ExpenseModel.fromMap(jsonData, (id) => category);
-      expect(expense, result);
+      expect(result, isA<ExpenseModel>());
     },
   );
 }

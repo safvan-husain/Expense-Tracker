@@ -7,7 +7,7 @@ class MyTheme {
     brightness: Brightness.light,
     visualDensity: const VisualDensity(vertical: 0.5, horizontal: 0.5),
     primarySwatch: const MaterialColor(
-      0xFFE0E0E0, // Set the primary color to white
+      0xFFE0E0E0,
       <int, Color>{
         50: Color(0xFFFAFAFA),
         100: Color(0xFFF5F5F5),

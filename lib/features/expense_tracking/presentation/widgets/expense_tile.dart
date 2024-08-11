@@ -74,6 +74,9 @@ class ExpenseTile extends StatelessWidget {
                             .showEditExpense(state.expenses.elementAt(index));
                       },
                       child: const Icon(Icons.edit)),
+                  const SizedBox(
+                    width: 5,
+                  ),
                   GestureDetector(
                       onTap: () {
                         ExpenseCubit.instance

@@ -4,7 +4,6 @@ import 'package:expense_tracker/features/expense_tracking/data/models/category_m
 import 'package:expense_tracker/features/expense_tracking/data/models/expense_model.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense_category.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -45,9 +44,7 @@ class DatabaseHelper {
   static DatabaseHelper get instance => Get.find<DatabaseHelper>();
 
   Future<Expense> insertExpense(Expense expense) async {
-    print("inserting expense");
-    int id = await _db.insert(expensesTable, expense.toMap());
-    print("id is $id");
+    await _db.insert(expensesTable, expense.toMap());
     return expense;
   }
 
@@ -67,7 +64,6 @@ class DatabaseHelper {
     var result = await _db.query(expensesTable);
     if (result.isNotEmpty) {
       for (Map<String, Object?> element in result) {
-        print(element);
         expenses.add(ExpenseModel.fromMap(element, (id) {
           var data = categoriesResponse
               .where((element) => element.id == id)

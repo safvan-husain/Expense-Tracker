@@ -7,6 +7,7 @@ import 'package:expense_tracker/features/expense_tracking/data/models/expense_mo
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense_category.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/use_case/get_all_category.dart';
+import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/widgets/select_category_box.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/view_expenses/bloc/expense_bloc.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/view_expenses/edit_expense_page.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,6 @@ import 'package:get/get.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/use_case/create_new_category.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/use_case/create_new_expense.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/use_case/edit_expense.dart';
-import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/create_expense_page.dart';
 
 part 'create_expense_state.dart';
 
@@ -51,6 +51,7 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
       Get.snackbar("Field missing", "Select a category");
       return;
     }
+    ExpenseCubit.instance.changeLoadingState(true);
     var result = await createNewCategory.call(
       NewCategoryParams(
         CategoryModel(
@@ -72,6 +73,7 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
         ));
       },
     );
+    ExpenseCubit.instance.changeLoadingState(false);
   }
 
   void showCalender(BuildContext context) async {
@@ -101,6 +103,7 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
       Get.snackbar("Field missing", "Specify the amount");
       return;
     }
+    ExpenseCubit.instance.changeLoadingState(true);
     var result = await createNewExpense.call(
       NewExpenseParams(
         ExpenseModel(
@@ -122,6 +125,7 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
         Get.back();
       },
     );
+    ExpenseCubit.instance.changeLoadingState(false);
   }
 
   void selectCategory(ExpenseCategory category) {
@@ -160,6 +164,7 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
   }
 
   void editExpenseData(Expense expense) async {
+    ExpenseCubit.instance.changeLoadingState(true);
     var result = await editExpense.call(EditExpenseParams(expense));
     result.fold(
       (l) {},
@@ -169,6 +174,9 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
         ExpenseCubit.instance.replaceAExpense(r);
       },
     );
+    // clearing input.
+    initialState();
+    ExpenseCubit.instance.changeLoadingState(false);
     Get.back();
   }
 }

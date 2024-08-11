@@ -22,6 +22,7 @@ class CategoryModel extends ExpenseCategory {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'title': title,
@@ -42,6 +43,5 @@ class CategoryModel extends ExpenseCategory {
   factory CategoryModel.fromJson(String source) =>
       CategoryModel.fromMap(json.decode(source) as Map<String, dynamic>);
   @override
-  // TODO: implement props
-  List<Object?> get props => [];
+  List<Object?> get props => [color, title];
 }

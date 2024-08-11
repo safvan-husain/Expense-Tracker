@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-import 'package:expense_tracker/features/expense_tracking/data/models/category_model.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense_category.dart';
 
 class ExpenseModel extends Expense {
-  ExpenseModel({
+  const ExpenseModel({
     required super.id,
     required super.money,
     required super.category,
@@ -57,6 +56,5 @@ class ExpenseModel extends Expense {
   }
 
   @override
-  // TODO: implement props
-  List<Object?> get props => [];
+  List<Object?> get props => [category, id];
 }

@@ -194,6 +194,9 @@ class _StaticCircleState extends State<StaticCircle> {
                               Summary.year => "Year",
                             },
                             style: Get.theme.textTheme.titleMedium),
+                        const SizedBox(
+                          width: 10,
+                        )
                       ],
                     ),
                   ),

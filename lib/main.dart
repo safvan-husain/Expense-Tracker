@@ -1,4 +1,5 @@
 import 'package:expense_tracker/core/database/database_helper.dart';
+import 'package:expense_tracker/core/notification/notification_controller.dart';
 import 'package:expense_tracker/core/theme.dart';
 import 'package:expense_tracker/features/expense_tracking/data/data_source/expense_local_data_source.dart';
 import 'package:expense_tracker/features/expense_tracking/data/repository/expense_repository.dart';
@@ -11,14 +12,23 @@ import 'package:expense_tracker/features/expense_tracking/domain/use_case/get_ex
 import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/bloc/create_expense_cubit.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/view_expenses/bloc/expense_bloc.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/view_expenses/expense_page.dart';
+import 'package:expense_tracker/features/expense_tracking/presentation/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationController.initNotification();
+  NotificationController.notificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()!
+      .requestNotificationsPermission();
+
+  await NotificationController.scheduleNotification();
+
   Get.put(DatabaseHelper(await DatabaseHelper.init()));
   ExpenseRepository repository =
       ExpenseRepository(ExpenseLocalDataSource(DatabaseHelper.instance));
@@ -58,8 +68,19 @@ class MyApp extends StatelessWidget {
       return OrientationBuilder(builder: (context, orientation) {
         SizerUtil.setScreenSize(constrains, orientation);
         return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: MyTheme.dark,
-          home: HomeScreen(),
+          builder: (context, child) {
+            // loading overlay act as single loading indicator usable by all pages by managing state using [ExpenseCubit]
+            return LoadingOverlay(child: child!);
+          },
+          // home: HomeScreen(),
+          home: MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaler: TextScaler.noScaling,
+            ),
+            child: const HomeScreen(),
+          ),
         );
       });
     });

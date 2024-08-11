@@ -25,12 +25,17 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
     required this.deleteExpense,
     required this.getAllExpenses,
   }) : super(const ExpenseState(
-          summaryBy: Summary.week,
+          summaryBy: Summary.year,
           // isListScrollable: false,
           screenPosition: ScreenPosition.top,
           expenses: [],
           summary: [],
+          isLoading: false,
         ));
+
+  void changeLoadingState(bool isLoading) {
+    emit(state.copyWith(isLoading: isLoading));
+  }
 
   ///there is another scroll -> listView, so this scroll applay at top only or when list view having NeverScrollPhysics.
   void handleScroll(bool isDown) async {
@@ -47,6 +52,7 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
   }
 
   void loadExpenseHistory() async {
+    changeLoadingState(true);
     var result = await getAllExpenses.call(NoParams());
     result.fold(
       (l) {
@@ -57,9 +63,11 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
         calculateSummary();
       },
     );
+    changeLoadingState(false);
   }
 
   void deleteExpenseData(Expense expense) async {
+    changeLoadingState(true);
     await deleteExpense.call(DeleteExpenseParams(expense.id));
     emit(
       state.copyWith(
@@ -69,10 +77,12 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
       ),
     );
     calculateSummary();
+    changeLoadingState(false);
   }
 
   ///replace any expense based on the id, if doesn't exist, change nothing.
   void replaceAExpense(Expense expense) {
+    changeLoadingState(true);
     emit(state.copyWith(
         expenses: state.expenses.map((e) {
       if (e.id == expense.id) {
@@ -82,11 +92,14 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
       }
     }).toList()));
     calculateSummary();
+    changeLoadingState(false);
   }
 
   void changeSummaryDuration(Summary summaryDuration) {
+    changeLoadingState(true);
     emit(state.copyWith(summaryBy: summaryDuration));
     calculateSummary();
+    changeLoadingState(false);
   }
 
   void filterByDate(BuildContext context) async {
@@ -97,7 +110,11 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
       firstDate: DateTime(2020),
       lastDate: now,
     );
-    if (date == null) return;
+    if (date == null) {
+      // changeLoadingState(false);/
+      return;
+    }
+    changeLoadingState(true);
     var result = await getAllExpenses.call(NoParams());
     result.fold(
       (l) {
@@ -114,6 +131,7 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
         emit(state.copyWith(expenses: filtered));
       },
     );
+    changeLoadingState(false);
   }
 
   void calculateSummary() async {
@@ -150,7 +168,12 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
           return SummaryItem(
               category: cat, percentage: (e.value / totalMoneySpend) * 100);
         }).toList();
-
+        if (summaryByCategoryPercentage.isEmpty) {
+          Get.snackbar("No data", "found no data within this duration");
+          //when no data found change back to year duration.
+          emit(state.copyWith(summaryBy: Summary.year));
+          return;
+        }
         emit(state.copyWith(summary: summaryByCategoryPercentage));
       },
     );

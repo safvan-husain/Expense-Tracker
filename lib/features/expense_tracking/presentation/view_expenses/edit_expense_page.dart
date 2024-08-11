@@ -2,9 +2,7 @@ import 'package:expense_tracker/core/utils/date_formatter.dart';
 import 'package:expense_tracker/features/expense_tracking/data/models/expense_model.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/bloc/create_expense_cubit.dart';
-import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/create_expense_page.dart';
-import 'package:expense_tracker/features/expense_tracking/presentation/view_expenses/bloc/expense_bloc.dart';
-import 'package:expense_tracker/features/expense_tracking/presentation/widgets/category_tile.dart';
+import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -30,6 +28,7 @@ class EditExpensePage extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () {
+                      CreateExpenseCubit.instance.initialState();
                       Get.back();
                     },
                     child: const Icon(Icons.arrow_back_ios_new),
@@ -47,8 +46,8 @@ class EditExpensePage extends StatelessWidget {
                 height: 8.h,
               ),
               Container(
-                width: 60.w,
-                height: 50,
+                width: 80.w,
+                height: 5.h,
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 // alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -72,6 +71,7 @@ class EditExpensePage extends StatelessWidget {
                 ),
               ),
               LocalButton(
+                width: 80.w,
                 label: state.date == null
                     ? "Pick a date"
                     : formatDate(state.date!),
@@ -80,6 +80,7 @@ class EditExpensePage extends StatelessWidget {
                 },
               ),
               LocalButton(
+                width: 80.w,
                 label: state.selectedCategory == null
                     ? "Select a category"
                     : state.selectedCategory!.title,
@@ -89,7 +90,7 @@ class EditExpensePage extends StatelessWidget {
                 },
               ),
               Container(
-                width: 60.w,
+                width: 80.w,
                 height: 20.h,
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 // alignment: Alignment.center,

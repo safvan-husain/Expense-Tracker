@@ -7,7 +7,9 @@ class ExpenseState {
   final ScreenPosition screenPosition;
   final List<SummaryItem> summary;
   final Summary summaryBy;
+  final bool isLoading;
   const ExpenseState({
+    required this.isLoading,
     required this.summaryBy,
     required this.summary,
     // required this.isListScrollable,
@@ -21,11 +23,13 @@ class ExpenseState {
     ScreenPosition? screenPosition,
     List<SummaryItem>? summary,
     Summary? summaryBy,
+    bool? isLoading,
   }) {
     if (expenses != null) {
       expenses.sort((a, b) => b.date.compareTo(a.date));
     }
     return ExpenseState(
+      isLoading: isLoading ?? this.isLoading,
       summaryBy: summaryBy ?? this.summaryBy,
       // isListScrollable: isListScrollable ?? this.isListScrollable,
       expenses: expenses ?? this.expenses,

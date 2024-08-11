@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense_category.dart';
 

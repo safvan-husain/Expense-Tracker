@@ -1,12 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:expense_tracker/core/failures/expense_failures.dart';
-import 'package:expense_tracker/core/usecases/usecase.dart';
 import 'package:expense_tracker/features/expense_tracking/data/data_source/expense_local_data_source.dart';
 import 'package:expense_tracker/features/expense_tracking/data/models/category_model.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense_category.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/entity/expense.dart';
 import 'package:expense_tracker/features/expense_tracking/domain/repository/expense_repository_interface.dart';
-import 'package:expense_tracker/features/expense_tracking/domain/use_case/get_expense_history.dart';
 // import 'package:flutter/src/foundation/annotations.dart';
 
 final class ExpenseRepository implements ExpenseRepositoryInterface {
