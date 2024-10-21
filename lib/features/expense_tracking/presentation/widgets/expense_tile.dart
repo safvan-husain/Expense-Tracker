@@ -7,15 +7,17 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../domain/entity/expense.dart';
+
 enum TilePosition { left, center, right }
 
 class ExpenseTile extends StatefulWidget {
-  final int index;
-  final ExpenseState state;
+  final Expense expenseData;
+  final String? day;
   const ExpenseTile({
     super.key,
-    required this.index,
-    required this.state,
+    required this.expenseData,
+    this.day
   });
 
   @override
@@ -24,19 +26,16 @@ class ExpenseTile extends StatefulWidget {
 
 class _ExpenseTileState extends State<ExpenseTile> {
   TilePosition position = TilePosition.center;
+  bool isDeletedClicked = false;
+  var deleteDuration = const Duration(milliseconds: 50);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         //if index 0 show date anyway otherwise compare with the previous to check both are on same day.
-        if (widget.index == 0 ||
-            !isSameDay(widget.state.expenses.elementAt(widget.index - 1).date,
-                widget.state.expenses.elementAt(widget.index).date))
-          Text(formatDate(
-            widget.state.expenses.elementAt(widget.index).date,
-            showDay: true,
-          )),
+        if (widget.day != null)
+          Text(widget.day!),
         GestureDetector(
           onHorizontalDragEnd: (details) {
             if (details.velocity.pixelsPerSecond.dx > 0) {
@@ -61,9 +60,10 @@ class _ExpenseTileState extends State<ExpenseTile> {
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Container(
+              child: AnimatedContainer(
+                duration: deleteDuration,
                 // margin: const EdgeInsets.symmetric(vertical: 10),
-                height: 60,
+                height: isDeletedClicked ? 0 : 60,
                 width: 100.w,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -87,7 +87,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
                               // color: Colors.red,
                               width: 90.w,
                               height: 60,
-                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -103,14 +103,12 @@ class _ExpenseTileState extends State<ExpenseTile> {
                                           position = TilePosition.center;
                                         });
                                       }, "No"),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 10,
                                       ),
                                       _buildButton(() {
                                         CreateExpenseCubit.instance
-                                            .showEditExpense(widget
-                                                .state.expenses
-                                                .elementAt(widget.index));
+                                            .showEditExpense(widget.expenseData);
                                         setState(() {
                                           position = TilePosition.center;
                                         });
@@ -120,14 +118,13 @@ class _ExpenseTileState extends State<ExpenseTile> {
                                 ],
                               ),
                             ),
-                            Container(
+                            SizedBox(
                               width: 90.w,
                               child: Row(
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
-                                        color: widget.state.expenses
-                                            .elementAt(widget.index)
+                                        color: widget.expenseData
                                             .category
                                             .color,
                                         borderRadius: const BorderRadius.only(
@@ -138,7 +135,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
                                     width: 60,
                                     alignment: Alignment.center,
                                     child: Text(
-                                      "\$ ${widget.state.expenses.elementAt(widget.index).money}",
+                                      "\$ ${widget.expenseData.money}",
                                       style: Get.textTheme.titleSmall?.copyWith(
                                         color:
                                             Get.theme.scaffoldBackgroundColor,
@@ -152,8 +149,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
                                   SizedBox(
                                     width: 50.w,
                                     child: Text(
-                                      widget.state.expenses
-                                          .elementAt(widget.index)
+                                      widget.expenseData
                                           .description,
                                       style: Get.textTheme.titleSmall,
                                       maxLines: 2,
@@ -172,7 +168,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
                               // color: Colors.yellow,
                               width: 90.w,
                               height: 60,
-                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -194,13 +190,11 @@ class _ExpenseTileState extends State<ExpenseTile> {
                                       ),
                                       _buildButton(
                                         () {
-                                          ExpenseCubit.instance
-                                              .deleteExpenseData(widget
-                                                  .state.expenses
-                                                  .elementAt(widget.index));
                                           setState(() {
-                                            position = TilePosition.center;
+                                            isDeletedClicked = true;
                                           });
+                                          ExpenseCubit.instance.deleteExpenseData(
+                                              widget.expenseData);
                                         },
                                         "Delete",
                                       )

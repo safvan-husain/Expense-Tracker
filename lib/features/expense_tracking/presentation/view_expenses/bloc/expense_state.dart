@@ -8,10 +8,12 @@ class ExpenseState {
   final List<SummaryItem> summary;
   final Summary summaryBy;
   final bool isLoading;
+  final int? deletingIndex;
   const ExpenseState({
     required this.isLoading,
     required this.summaryBy,
     required this.summary,
+    this.deletingIndex,
     // required this.isListScrollable,
     required this.expenses,
     required this.screenPosition,
@@ -35,6 +37,17 @@ class ExpenseState {
       expenses: expenses ?? this.expenses,
       screenPosition: screenPosition ?? this.screenPosition,
       summary: summary ?? this.summary,
+    );
+  }
+
+  ExpenseState changeDeleteIndex(int? index) {
+    return ExpenseState(
+      isLoading: isLoading,
+      summaryBy: summaryBy,
+      summary: summary,
+      expenses: expenses,
+      screenPosition: screenPosition,
+      deletingIndex: index,
     );
   }
 }

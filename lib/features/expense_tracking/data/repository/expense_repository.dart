@@ -9,8 +9,11 @@ import 'package:expense_tracker/features/expense_tracking/domain/repository/expe
 
 final class ExpenseRepository implements ExpenseRepositoryInterface {
   final ExpenseLocalDataSource localDataSource;
+  //final remoteDataSOurce;
 
-  ExpenseRepository(this.localDataSource);
+  ExpenseRepository(
+    this.localDataSource,
+  ); //this.data);
 
   @override
   Future<Either<Failure, List<Expense>>> getAllExpenses() async {

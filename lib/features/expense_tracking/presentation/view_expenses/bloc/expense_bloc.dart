@@ -66,18 +66,15 @@ class ExpenseCubit extends b.Cubit<ExpenseState> {
     changeLoadingState(false);
   }
 
-  void deleteExpenseData(Expense expense) async {
-    changeLoadingState(true);
-    await deleteExpense.call(DeleteExpenseParams(expense.id));
+  Future<void> deleteExpenseData(Expense expense) async {
+    deleteExpense.call(DeleteExpenseParams(expense.id));
+
     emit(
       state.copyWith(
-        expenses: state.expenses
-            .where((element) => element.id != expense.id)
-            .toList(),
+        expenses: state.expenses.where((e) => e.id != expense.id).toList()
       ),
     );
     calculateSummary();
-    changeLoadingState(false);
   }
 
   ///replace any expense based on the id, if doesn't exist, change nothing.

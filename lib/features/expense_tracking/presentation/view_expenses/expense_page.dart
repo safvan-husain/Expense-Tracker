@@ -1,3 +1,4 @@
+import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/bloc/create_expense_cubit.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/create_expense/create_expense_page.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/view_expenses/bloc/expense_bloc.dart';
 import 'package:expense_tracker/features/expense_tracking/presentation/widgets/expense_tile.dart';
@@ -7,6 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart' as g;
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+
+import '../../../../core/utils/date_formatter.dart';
+import '../../domain/entity/expense.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -140,8 +144,11 @@ class HomeScreen extends StatelessWidget {
                                               );
                                             }
                                             return ExpenseTile(
-                                              index: index,
-                                              state: state,
+                                              key: GlobalKey(),
+                                              expenseData: state.expenses
+                                                  .elementAt(index),
+                                              day: getDayIfFist(
+                                                  index, state.expenses),
                                             );
                                           },
                                         ),
@@ -163,6 +170,7 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Get.theme.highlightColor,
         onPressed: () {
+          // context.read<CreateExpenseCubit>().createRandomExpense();
           g.Get.to(
             () => const CreateExpensePage(),
             transition: g.Transition.downToUp,
@@ -171,6 +179,18 @@ class HomeScreen extends StatelessWidget {
         label: const Icon(Icons.add),
       ),
     );
+  }
+
+  String? getDayIfFist(int index, List<Expense> expenses) {
+    if (index == 0 ||
+        !isSameDay(expenses.elementAt(index - 1).date,
+            expenses.elementAt(index).date)) {
+      return formatDate(
+        expenses.elementAt(index).date,
+        showDay: true,
+      );
+    }
+    return null;
   }
 
   Widget _appBar() {
@@ -200,30 +220,6 @@ class HomeScreen extends StatelessWidget {
               style: g.Get.theme.textTheme.bodyLarge,
             ),
           ),
-          // Align(
-          //   alignment: Alignment.centerRight,
-          //   child: PopupMenuButton<String>(
-          //     icon: Icon(Icons.more_vert), // Vertical more icon
-          //     onSelected: (String result) {
-          //       // Handle your menu action here
-          //       print(result);
-          //     },
-          //     itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          //       const PopupMenuItem<String>(
-          //         value: '1',
-          //         child: Text('Shedule Notification'),
-          //       ),
-          //       // const PopupMenuItem<String>(
-          //       //   value: 'Option 2',
-          //       //   child: Text('Option 2'),
-          //       // ),
-          //       // const PopupMenuItem<String>(
-          //       //   value: 'Option 3',
-          //       //   child: Text('Option 3'),
-          //       // ),
-          //     ],
-          //   ),
-          // )
         ],
       ),
     );

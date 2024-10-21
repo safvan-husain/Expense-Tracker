@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:math';
+
 import 'package:bloc/bloc.dart' as b;
 import 'package:expense_tracker/core/usecases/usecase.dart';
 import 'package:expense_tracker/core/utils/random_color.dart';
@@ -128,12 +130,49 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
     ExpenseCubit.instance.changeLoadingState(false);
   }
 
+  //For debug purpose.
+  void createRandomExpense() async {
+    ExpenseCubit.instance.changeLoadingState(true);
+    var now = DateTime.now();
+
+    if (state.categories.isEmpty) {
+      await showCategories(showDialogue: false);
+    }
+    if(state.categories.isEmpty) {
+      Get.snackbar("No catergeries", "Error");
+      return;
+    }
+
+    var result = await createNewExpense.call(
+      NewExpenseParams(
+        ExpenseModel(
+            category: state.categories.elementAt(Random().nextInt(state.categories.length)),
+            description: "my desc",
+            date: now.copyWith(day: Random().nextInt(now.day)),
+            money: 299,
+            //will ignore this field by toMap method for storing to database"
+            id: 0),
+      ),
+    );
+
+    result.fold(
+          (l) {},
+          (newExpense) {
+        ExpenseCubit.instance.loadExpenseHistory();
+        emit(CreateExpenseState.initial()
+            .copyWith(categories: state.categories));
+        Get.back();
+      },
+    );
+    ExpenseCubit.instance.changeLoadingState(false);
+  }
+
   void selectCategory(ExpenseCategory category) {
     emit(state.copyWith(selectedCategory: category));
     Get.back();
   }
 
-  void showCategories() async {
+  Future<void> showCategories({bool showDialogue = true}) async {
     var result = await getAllCategory.call(NoParams());
     result.fold(
       (l) {},
@@ -141,10 +180,12 @@ class CreateExpenseCubit extends b.Cubit<CreateExpenseState> {
         emit(state.copyWith(categories: r));
       },
     );
+    if(showDialogue) {
     Get.dialog(
       const SelectCategoryBox(),
       barrierColor: Colors.black,
     );
+    }
   }
 
   void showEditExpense(Expense expense) {
